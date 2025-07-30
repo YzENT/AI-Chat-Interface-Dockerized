@@ -34,7 +34,8 @@ This application is fully Dockerized for seamless deployment.
 
    Once running, you’ll see a message such as:
    ```shell
-    fpm: ready to handle connections
+    NOTICE: fpm is running, pid 1
+    NOTICE: ready to handle connections
    ```
 
     Web interface: http://localhost
