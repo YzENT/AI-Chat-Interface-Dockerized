@@ -1,0 +1,486 @@
+.wati-config-page {
+    background-color: #1e293b;
+    color: #f1f5f9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.wati-config-page-header {
+    background-color: #374151;
+    padding: 16px 24px;
+    border-bottom: 1px solid #4b5563;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.wati-config-page-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.wati-config-main-page {
+    flex: 1;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.wati-config-section {
+    background-color: #374151;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.wati-config-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #4b5563;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.wati-config-section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin: 0;
+}
+
+.wati-add-config-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    min-width: fit-content;
+    white-space: nowrap;
+}
+
+.wati-add-config-btn:hover {
+    background-color: #2563eb;
+}
+
+.wati-add-form-container {
+    margin-bottom: 24px;
+    padding: 20px;
+    background-color: #2d3748;
+    border-radius: 8px;
+    border: 1px solid #4b5563;
+}
+
+.wati-add-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.wati-form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.wati-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.wati-form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #f1f5f9;
+}
+
+.wati-form-input, .wati-edit-input {
+    padding: 10px 12px;
+    background-color: #1e293b;
+    border: 1px solid #4b5563;
+    border-radius: 6px;
+    color: #f1f5f9;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.wati-form-input:focus, .wati-edit-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.wati-form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.wati-submit-btn {
+    padding: 12px 24px;
+    background-color: #7c3aed;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 100px;
+    justify-content: center;
+    height: fit-content;
+    flex: 1;
+    min-width: 120px;
+}
+
+.wati-submit-btn:hover:not(:disabled) {
+    background-color: #8b5cf6;
+}
+
+.wati-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.wati-cancel-btn {
+    background-color: #6b7280;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    flex: 1;
+    min-width: 80px;
+}
+
+.wati-cancel-btn:hover {
+    background-color: #4b5563;
+}
+
+.wati-config-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+    overflow-y: auto;
+    padding-top: 2px;
+}
+
+.wati-config-table {
+    display: flex;
+    flex-direction: column;
+    background-color: #2d3748;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #4b5563;
+    overflow-x: auto;
+}
+
+.wati-table-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 100px;
+    background-color: #1e293b;
+    font-weight: 600;
+    font-size: 14px;
+    min-width: 400px;
+}
+
+.wati-header-cell {
+    padding: 16px;
+    border-right: 1px solid #4b5563;
+    color: #f1f5f9;
+}
+
+.wati-header-cell:last-child {
+    border-right: none;
+}
+
+.wati-actions-header {
+    text-align: center;
+}
+
+.wati-table-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 100px;
+    border-bottom: 1px solid #4b5563;
+    transition: background-color 0.2s;
+    min-width: 400px;
+    overflow-x: auto;
+}
+
+.wati-table-row:hover {
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.wati-table-row:last-child {
+    border-bottom: none;
+}
+
+.wati-table-cell {
+    padding: 16px;
+    border-right: 1px solid #4b5563;
+    font-size: 14px;
+    color: #f1f5f9;
+    overflow-x: auto;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.table-cell:last-child {
+    border-right: none;
+}
+
+.wati-token-cell {
+    font-family: monospace;
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #93c5fd;
+    white-space: nowrap;
+    position: relative;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+}
+
+/* Beautiful scrollbar for webkit browsers */
+.wati-table-cell::-webkit-scrollbar,
+.wati-config-table::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+.wati-table-cell::-webkit-scrollbar-track,
+.wati-config-table::-webkit-scrollbar-track {
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 3px;
+}
+
+.wati-table-cell::-webkit-scrollbar-thumb,
+.wati-config-table::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.4);
+    border-radius: 3px;
+}
+
+.wati-table-cell::-webkit-scrollbar-thumb:hover,
+.wati-config-table::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.6);
+}
+
+.wati-actions-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.wati-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.wati-action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.wati-edit-btn {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.wati-edit-btn:hover {
+    background-color: #2563eb;
+}
+
+.wati-delete-btn {
+    background-color: #ef4444;
+    color: white;
+}
+
+.wati-delete-btn:hover {
+    background-color: #dc2626;
+}
+
+.wati-save-btn {
+    background-color: #10b981;
+    color: white;
+}
+
+.wati-save-btn:hover {
+    background-color: #059669;
+}
+
+.wati-cancel-btn-icon {
+    background-color: #6b7280;
+    color: white;
+}
+
+.wati-cancel-btn-icon:hover {
+    background-color: #4b5563;
+}
+
+.wati-config-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 64px 16px;
+    gap: 16px;
+}
+
+.loading-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.wati-config-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px;
+    gap: 16px;
+    color: #6b7280;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+    .wati-config-page-header {
+        padding: 12px 16px;
+    }
+    
+    .wati-config-page-title {
+        font-size: 16px;
+    }
+    
+    .wati-config-main-page {
+        padding: 16px 12px;
+        gap: 20px;
+    }
+    
+    .wati-config-section {
+        padding: 12px;
+    }
+    
+    .wati-config-section-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .wati-config-section-title {
+        font-size: 14px;
+        text-align: center;
+    }
+    
+    .wati-add-config-btn {
+        align-self: center;
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+    
+    .wati-add-form-container {
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .wati-form-actions {
+        justify-content: stretch;
+        flex-direction: column;
+    }
+    
+    .wati-submit-btn,
+    .wati-cancel-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .wati-table-header,
+    .wati-table-row {
+        font-size: 11px;
+        grid-template-columns: 1fr 1fr 1fr 80px;
+    }
+    
+    .wati-header-cell,
+    .wati-table-cell {
+        padding: 8px 6px;
+    }
+    
+    .wati-action-btn {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .wati-actions-cell {
+        gap: 2px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    .wati-config-main-page {
+        padding: 12px 8px;
+    }
+    
+    .wati-config-section {
+        padding: 8px;
+    }
+    
+    .wati-add-form-container {
+        padding: 8px;
+    }
+    
+    .wati-table-header,
+    .wati-table-row {
+        font-size: 10px;
+        grid-template-columns: 1fr 1fr 1fr 70px;
+    }
+    
+    .wati-header-cell,
+    .wati-table-cell {
+        padding: 6px 4px;
+    }
+    
+    .wati-action-btn {
+        width: 20px;
+        height: 20px;
+    }
+}

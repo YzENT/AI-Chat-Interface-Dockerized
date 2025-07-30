@@ -1,0 +1,95 @@
+# New
+
+services:
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - laravel_network
+
+  # phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    networks:
+      - laravel_network
+    depends_on:
+      - db
+
+  # Laravel Application (Backbone)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app_engine
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    environment:
+      - db_name=${DB_NAME}
+      - db_username=${DB_USERNAME}
+      - db_password=${DB_PASSWORD:-secret}
+      - external_api=${EXTERNAL_API_CALL:-secret}
+    networks:
+      - laravel_network
+    depends_on:
+      - db
+    expose:
+      - "9000"  # PHP-FPM port
+
+  # Nginx Web Server
+  webserver:
+    image: nginx:alpine
+    container_name: website
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - laravel_network
+    depends_on:
+      - app
+
+  # Node.js for Vite
+  node:
+    image: node:20-alpine
+    container_name: node
+    working_dir: /var/www/html
+    volumes:
+      - ./src:/var/www/html:cached
+    networks:
+      - laravel_network
+    command: /bin/sh -c "npm install && npm run build && tail -f /dev/null"
+    ports:
+      - "5173:5173"
+    depends_on:
+      - app
+
+networks:
+  laravel_network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local

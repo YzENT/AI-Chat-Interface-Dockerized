@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Requests\Chatbot;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+
+class CrawlRequest extends FormRequest {
+    
+    public function authorize() {
+        $user = auth('api')->user();
+        return $user && $user->is_admin;
+    }
+
+    // If authorize() passes, only run rules function
+    public function rules(): array {
+        return [
+            'url' => [
+                'required',
+                'string',
+                'url',
+            ],
+        ];
+    }
+
+    // Handle validation failure in a separate method
+    protected function failedValidation(Validator $validator) {
+        throw new HttpResponseException(
+            response()->json([
+                'success' => false,
+                'data' => [],
+                'msg' => $validator->errors()->first(),
+            ], 422)
+        );
+    }
+}

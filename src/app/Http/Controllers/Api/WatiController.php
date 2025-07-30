@@ -1,0 +1,193 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use Illuminate\Http\Request;
+use App\Http\Requests\AdminRequest;
+use App\Services\ChatbotService;
+use App\Services\WatiService;
+use App\Http\Controllers\BaseController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
+
+class WatiController extends BaseController {
+
+    protected $chatbotService;
+    protected $watiService;
+
+    public function __construct(ChatbotService $chatbotService, WatiService $watiService) {
+        $this->chatbotService = $chatbotService;
+        $this->watiService = $watiService;
+    }
+
+    // Don't put WatiRequest here, webhook api needs to be accessible to public
+    public function handle(Request $request, $vendor_name) {
+
+        $validationError = $this->validateRequest($request, [
+            'text' => 'required|string|max:4096',
+            'waId' => 'required|string',
+        ]);
+
+        if ($validationError) {
+            return $validationError;
+        }
+
+        try {
+            $ai_response = $this->chatbotService->askJarvis($request->text);
+
+            if (!$ai_response['success']) {
+                throw new \Exception ($ai_response['error']);
+            }
+
+            $temp = 'You are now talking to an early prototype of an AI Chatbot developed by LifeCare. Please be advised that the information provided by this AI may not be fully accurate or up-to-date. It is recommended to verify any details independently or contact our support team for confirmation by directly calling this number.';
+
+            // Forward AI response using WATI
+            $whatsapp_status = $this->watiService->sendWhatsappMessage($ai_response['body_data']->response, $request->waId, $vendor_name);
+
+            if (!$whatsapp_status['success']) {
+                throw new \Exception ($whatsapp_status['error']);
+            }
+
+            return response()->json([
+                'success' => true,
+                'msg' => 'Message sent to user in whatsapp.',
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'msg' => $e->getMessage(),
+                'debug' => config('app.debug') ? 
+                [
+                    'debug_request' => $request,
+                    'debug_ai' => $ai_response,
+                    'debug_whatsapp' => $whatsapp_status,
+                ]
+                 : 'App not in debug mode.',
+            ], 500);
+        }
+    }
+
+    public function updateVendorInfoWATI(AdminRequest $request, $watiID) {
+
+        $validationError = $this->validateRequest($request, [
+            'api_token' => 'required|string',
+            'api_url' => 'required|string|url|max:255',
+            'vendor_name' => 'required|string|max:255|unique:wati_info',
+        ]);
+
+        if ($validationError) {
+            return $validationError;
+        }
+
+        try {
+            $user = $this->getAuthenticatedUser();
+            $response = $this->watiService->updateVendorAPIData($watiID, $request->api_token, $request->api_url, $request->vendor_name, $user->id);
+
+            if (!$response['success']) {
+                throw new \Exception ($response['error']);
+            }
+
+            return response()->json([
+                'success' => true,
+                'msg' => "Successfully updated WATI configuration for {$request->vendor_name}",
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'msg' => $e->getMessage(),
+                'debug' => config('app.debug') ? 
+                [
+                    'debug_request' => $request,
+                    'debug_response' => $response,
+                ]
+                 : 'App not in debug mode.',
+            ], 500);
+        }
+    }
+
+    public function getActiveAPI(AdminRequest $request) {
+        try {
+            $response = $this->watiService->getActiveAPI();
+
+            if (!$response['success']) {
+                throw new \Exception ($response['error']);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $response['data'],
+                'msg' => 'Active WATI information obtained.',
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'msg' => $e->getMessage(),
+                'debug' => config('app.debug') ? $response : 'App not in debug mode.',
+            ], 500);
+        }
+    }
+
+    public function deleteVendorAPI(AdminRequest $request, $watiID) {
+        try {
+            $response = $this->watiService->removeVendorAPIData($watiID);
+
+            if (!$response['success']) {
+                throw new \Exception ($response['error']);
+            }
+
+            return response()->json([
+                'success' => true,
+                'msg' => "Successfully removed WATI configuration.",
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'msg' => $e->getMessage(),
+                'debug' => config('app.debug') ? $response : 'App not in debug mode.',
+            ], 500);
+        }
+    }
+
+    public function createVendorAPI(AdminRequest $request) {
+        $validationError = $this->validateRequest($request, [
+            'api_token' => 'required|string',
+            'api_url' => 'required|string|url|max:255',
+            'vendor_name' => 'required|string|max:255|unique:wati_info',
+        ]);
+
+        if ($validationError) {
+            return $validationError;
+        }
+
+        try {
+            $user = $this->getAuthenticatedUser();
+            $response = $this->watiService->createVendorAPIData($request->api_token, $request->api_url, $request->vendor_name, $user->id);
+
+            if (!$response['success']) {
+                throw new \Exception ($response['error']);
+            }
+
+            return response()->json([
+                'success' => true,
+                'msg' => "Successfully created WATI configuration for {$request->vendor_name}",
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'msg' => $e->getMessage(),
+                'debug' => config('app.debug') ? 
+                [
+                    'debug_request' => $request,
+                    'debug_response' => $response,
+                ]
+                 : 'App not in debug mode.',
+            ], 500);
+        }
+    }
+}
