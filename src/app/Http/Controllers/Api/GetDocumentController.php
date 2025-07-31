@@ -45,9 +45,10 @@ class GetDocumentController extends BaseController {
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'msg' => $e->getMessage(),
+                'msg' => 'Failed to retrieve document list from external server.',
                 'debug' => config('app.debug') ? 
                 [
+                    'debug_msg' => $e->getMessage(),
                     'debug_response' => $result,
                 ]
                  : 'App not in debug mode.',
@@ -75,9 +76,10 @@ class GetDocumentController extends BaseController {
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'msg' => $e->getMessage(),
+                'msg' => 'Failed to obtain file from local server.',
                 'debug' => config('app.debug') ? 
                 [
+                    'debug_msg' => $e->getMessage(),
                     'debug_request' => $request,
                     'debug_response' => $response,
                 ]

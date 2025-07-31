@@ -42,9 +42,10 @@ class UploadDocumentController extends BaseController {
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'msg' => $e->getMessage(),
+                'msg' => 'Failed to upload file to servers.',
                 'debug' => config('app.debug') ? 
                 [
+                    'debug_msg' => $e->getMessage(),
                     'debug_request' => $request,
                     'debug_response' => $result,
                 ]

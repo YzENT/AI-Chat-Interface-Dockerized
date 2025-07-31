@@ -33,9 +33,10 @@ class ProfileController extends BaseController {
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'msg' => $e->getMessage(),
+                'msg' => 'Failed to obtain profile details.',
                 'debug' => config('app.debug') ? 
                 [
+                    'debug_msg' => $e->getMessage(),
                     'debug_response' => $response,
                 ]
                  : 'App not in debug mode.',
@@ -60,9 +61,10 @@ class ProfileController extends BaseController {
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'msg' => $e->getMessage(),
+                'msg' => 'Failed to update profile details.',
                 'debug' => config('app.debug') ? 
                 [
+                    'debug_msg' => $e->getMessage(),
                     'debug_request' => $request,
                     'debug_response' => $response,
                 ]
