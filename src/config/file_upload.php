@@ -5,6 +5,7 @@ return [
         'faq' => ['txt', 'pdf', 'docx'],
         'internal' => ['txt', 'pdf', 'docx', 'csv', 'xlsx'],
     ],
+    // Directory
     'upload_path' => [
         'faq' => 'uploads/faq',
         'internal' => 'uploads/internal',

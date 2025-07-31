@@ -43,7 +43,7 @@ export default function EditProfilePage() {
 
     const getUserDetails = async () => {
         try {
-            const response = await fetch('/api/profile/get-details', {
+            const response = await fetch('/api/profile', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export default function EditProfilePage() {
     const handleSave = async () => {
         try {
             setSubmitLoading(true);
-            const response = await fetch('/api/profile/update', {
+            const response = await fetch('/api/profile', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

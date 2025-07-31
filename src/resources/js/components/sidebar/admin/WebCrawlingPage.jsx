@@ -30,7 +30,7 @@ export default function WebCrawlingPage() {
     const getPreviousAddedURLs = async () => {
         try {
             setPreviousURLsLoading(true);
-            const response = await fetch('/api/chatbot/crawl/get', {
+            const response = await fetch('/api/chatbot/crawl', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export default function WebCrawlingPage() {
 
         try {
             setSubmitLoading(true);
-            const response = await fetch ('/api/chatbot/crawl/upload', {
+            const response = await fetch ('/api/chatbot/crawl', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

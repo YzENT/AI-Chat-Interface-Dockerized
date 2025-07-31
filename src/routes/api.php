@@ -35,7 +35,7 @@ Route::get('/ping', function () {
 });
 
 Route::middleware('auth:api')->group(function() {
-    Route::get('/ping_admin', function () {
+    Route::get('/ping_verified', function () {
         return response()->json([
             'status' => 'success', 
             'message' => 'API is working',
@@ -43,7 +43,6 @@ Route::middleware('auth:api')->group(function() {
         ]);
     });
 });
-
 
 
 // Public routes
@@ -63,8 +62,8 @@ Route::middleware('auth:api')->group(function () {
     // ---User functions---
     // --------------------
     Route::post('/logout', [LogoutController::class, 'logout']);
-    Route::get('/profile/get-details', [ProfileController::class, 'getProfileDetails']);
-    Route::post('/profile/update', [ProfileController::class, 'updateProfileDetails']);
+    Route::get('/profile', [ProfileController::class, 'getProfileDetails']);
+    Route::post('/profile', [ProfileController::class, 'updateProfileDetails']);
 });
 
 Route::middleware(['auth:api', 'admin'])->group(function () {
@@ -73,32 +72,29 @@ Route::middleware(['auth:api', 'admin'])->group(function () {
     // --------------------
 
     // WATI hidden functions
-    // Construction
-    Route::post('/wati/update/{watiID}', [WatiController::class, 'updateVendorInfoWATI']);
-    Route::get('/wati/get', [WatiController::class, 'getActiveAPI']);
-    Route::post('/wati/delete/{watiID}', [WatiController::class, 'deleteVendorAPI']);
-    Route::post('/wati/create', [WatiController::class, 'createVendorAPI']);
+    Route::get('/wati', [WatiController::class, 'getActiveAPI']);
+    Route::post('/wati', [WatiController::class, 'createVendorAPI']);
+    Route::put('/wati/{watiID}', [WatiController::class, 'updateVendorInfoWATI']);
+    Route::delete('/wati/{watiID}', [WatiController::class, 'deleteVendorAPI']);
 
     // Uploading Documents
     // Names at the back are for App\Http\Requests\UploadDocumentRequest.php
-    Route::post('/docs/upload/faq', [UploadDocumentController::class, 'uploadFAQ'])->name('upload.faq');
-    Route::post('/docs/upload/internal', [UploadDocumentController::class, 'uploadInternal'])->name('upload.internal');
-    Route::get('/docs/upload/get-config', function () {
-        return response()->json(Config::get('file_upload'));
-    });
+    Route::post('/docs/faq', [UploadDocumentController::class, 'uploadFAQ'])->name('upload.faq');
+    Route::post('/docs/internal', [UploadDocumentController::class, 'uploadInternal'])->name('upload.internal');
 
     // Fetching document list
-    Route::get('/docs/get/faq', [GetDocumentController::class, 'getFAQ_docs']);
-    Route::get('/docs/get/internal', [GetDocumentController::class, 'getInternal_docs']);
-
-    // Download document
-    Route::get('/docs/download/{fileId}', [GetDocumentController::class, 'downloadDocument']);
+    Route::get('/docs/faq', [GetDocumentController::class, 'getFAQ']);
+    Route::get('/docs/internal', [GetDocumentController::class, 'getInternal']);
+    Route::get('/docs/config', function () {
+        return response()->json(Config::get('file_upload'));
+    });
+    Route::get('/docs/{fileId}', [GetDocumentController::class, 'downloadDocument']);
 
     // Advanced chatbot utilities
     Route::get('/chatbot/knowledge', [ChatbotController::class, 'getKnowledge']);
-    Route::post('/chatbot/prompt/upload', [ChatbotController::class, 'uploadPrompt']);
-    Route::get('/chatbot/prompt/get', [ChatbotController::class, 'getPrompts']);
-    Route::post('/chatbot/crawl/upload', [ChatbotController::class, 'uploadCrawlURL']);
-    Route::get('/chatbot/crawl/get', [ChatbotController::class, 'getCrawledURLs']);
+    Route::post('/chatbot/prompt', [ChatbotController::class, 'uploadPrompt']);
+    Route::get('/chatbot/prompt', [ChatbotController::class, 'getPrompts']);
+    Route::post('/chatbot/crawl', [ChatbotController::class, 'uploadCrawlURL']);
+    Route::get('/chatbot/crawl', [ChatbotController::class, 'getCrawledURLs']);
 
 });

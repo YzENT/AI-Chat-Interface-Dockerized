@@ -25,7 +25,7 @@ export default function UploadFilePage() {
 
     const setDocumentRestrictions = async () => {
         try {
-            const response = await fetch('/api/docs/upload/get-config', {
+            const response = await fetch('/api/docs/config', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ export default function UploadFilePage() {
             const config = await response.json();
             if (config && documentType) {
                 setAllowedFileTypes(config.allowed_types[documentType].map(type => '.' + type).join(','));
-                setUploadURL('/docs/upload/' + documentType);
+                setUploadURL('/docs/' + documentType);
             }
 
         } catch (error) {

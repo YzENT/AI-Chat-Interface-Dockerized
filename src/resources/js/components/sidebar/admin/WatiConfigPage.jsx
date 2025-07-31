@@ -47,7 +47,7 @@ export default function WatiConfigPage() {
     const getWatiConfigList = async () => {
         try {
             setFetchLoading(true);
-            const response = await fetch('/api/wati/get', {
+            const response = await fetch('/api/wati', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ export default function WatiConfigPage() {
 
         try {
             setSubmitLoading(true);
-            const response = await fetch ('/api/wati/create', {
+            const response = await fetch ('/api/wati', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -121,8 +121,8 @@ export default function WatiConfigPage() {
 
         try {
             setEditLoading(editingId);
-            const response = await fetch ('/api/wati/update/' + editingId, {
-                method: 'POST',
+            const response = await fetch ('/api/wati/' + editingId, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + bearerToken,
@@ -163,8 +163,8 @@ export default function WatiConfigPage() {
 
         try {
             setDeleteLoading(id);
-            const response = await fetch ('/api/wati/delete/' + id, {
-                method: 'POST',
+            const response = await fetch ('/api/wati/' + id, {
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + bearerToken,

@@ -27,7 +27,7 @@ export default function GetFilePage() {
     const fetchDocuments = async () => {
         try {
             setDocumentListLoading(true);
-            const response = await fetch('/api/docs/get/' + documentType, {
+            const response = await fetch('/api/docs/' + documentType, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ export default function GetFilePage() {
     const handleDownload = async (fileID, fileName) => {
         try {
             setDownloadingFiles(prev => new Set([...prev, fileID]));
-            const response = await fetch('/api/docs/download/' + fileID, {
+            const response = await fetch('/api/docs/' + fileID, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

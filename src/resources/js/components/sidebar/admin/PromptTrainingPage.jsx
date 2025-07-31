@@ -29,7 +29,7 @@ export default function PromptTrainingPage() {
     const getPreviousAddedPrompts = async () => {
         try {
             setPreviousPromptsLoading(true);
-            const response = await fetch('/api/chatbot/prompt/get', {
+            const response = await fetch('/api/chatbot/prompt', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export default function PromptTrainingPage() {
 
         try {
             setSubmitLoading(true);
-            const response = await fetch ('/api/chatbot/prompt/upload', {
+            const response = await fetch ('/api/chatbot/prompt', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

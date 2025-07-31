@@ -18,11 +18,11 @@ class GetDocumentController extends BaseController {
         $this->getDocumentService = $getDocumentService;
     }
 
-    public function getInternal_docs(AdminRequest $request) {
+    public function getInternal(AdminRequest $request) {
         return $this->getDocumentList('INTERNAL');
     }
 
-    public function getFAQ_docs(AdminRequest $request) {
+    public function getFAQ(AdminRequest $request) {
         return $this->getDocumentList('FAQ');
     }
 
