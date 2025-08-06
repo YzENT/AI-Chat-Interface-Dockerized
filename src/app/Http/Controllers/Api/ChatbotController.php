@@ -23,21 +23,17 @@ class ChatbotController extends BaseController {
         try {
             $user = $this->getAuthenticatedUser();
             $response = $this->chatbotService->askJarvis($user->id, $request->prompt);
-
+            
             if (!$response['success']) {
                 throw new \Exception ($response['error']);
             }
 
             $response_data = $response['data'];
 
-            // Remove <think> </think> tags from chatbot response
-            $cleanedResponse = preg_replace('/<think>.*?<\/think>/s', '', $response_data->response);
-            $cleanedResponse = trim($cleanedResponse);
-
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'response' => $cleanedResponse,
+                    'response' => $response_data->response,
                     'sources' => $response_data->sources ?? '',
                     'confidence' => $response_data->confidence ?? '',
                     // 'similarity' => isset($response_data->similarity) ? round($response_data->similarity, 2) : null,

@@ -19,6 +19,7 @@ class WatiController extends BaseController {
     public function __construct(ChatbotService $chatbotService, WatiService $watiService) {
         $this->chatbotService = $chatbotService;
         $this->watiService = $watiService;
+        $this->defaultUserID = 0;
     }
 
     // Don't put WatiRequest here, webhook api needs to be accessible to public
@@ -34,7 +35,7 @@ class WatiController extends BaseController {
         }
 
         try {
-            $ai_response = $this->chatbotService->askJarvis($request->text);
+            $ai_response = $this->chatbotService->askJarvis($this->defaultUserID, $request->text);
 
             if (!$ai_response['success']) {
                 throw new \Exception ($ai_response['error']);

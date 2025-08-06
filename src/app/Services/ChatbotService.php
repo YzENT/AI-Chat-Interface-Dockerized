@@ -171,10 +171,14 @@ class ChatbotService {
 
     // Jarvis Functions
 
-    public function askJarvis($userId, $prompt) {
-        return $this->jarvisApi_POST('/ask', [
+    public function askJarvis($userID, $prompt) {
+
+        $result = $this->jarvisApi_POST('/ask', [
             'prompt' => $prompt,
         ]);
+        $result['data']->response = preg_replace('/<think>.*?<\/think>/s', '', $result['data']->response);
+
+        return $result;
     }
 
     public function getJarvisKnowledge() {

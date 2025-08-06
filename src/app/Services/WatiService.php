@@ -17,7 +17,7 @@ class WatiService {
     public function sendWhatsappMessage(string $messageToSend, string $phoneNumberToSend, string $vendor_name) {
 
         // WATI doesn't support json raw data anymore, have to send through URL
-        $joined_url = "/sendSessionMessage/${phoneNumberToSend}?messageText=${messageToSend}";
+        $joined_url = "/api/v1/sendSessionMessage/${phoneNumberToSend}?messageText=${messageToSend}";
 
         try {
             $vendor_api = $this->getVendorAPIData($vendor_name);
@@ -135,6 +135,29 @@ class WatiService {
                 'vendor_name' => $vendor_name,
                 'updated_by_user_id' => $userID,
             ]);
+
+            return [
+                'success' => true,
+                'data' => $vendor_api,
+            ];
+
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    private function getVendorAPIData(string $vendor_name) {
+        try {
+            $vendor_api = Wati::where('vendor_name', $vendor_name)
+                            ->where('revoked', false)
+                            ->first();
+            
+            if (!$vendor_api) {
+                throw new \Exception("Vendor API data not found for vendor: {$vendor_name}");
+            }
 
             return [
                 'success' => true,
