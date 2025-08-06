@@ -43,7 +43,7 @@ class WatiController extends BaseController {
             $temp = 'You are now talking to an early prototype of an AI Chatbot developed by LifeCare. Please be advised that the information provided by this AI may not be fully accurate or up-to-date. It is recommended to verify any details independently or contact our support team for confirmation by directly calling this number.';
 
             // Forward AI response using WATI
-            $whatsapp_status = $this->watiService->sendWhatsappMessage($ai_response['body_data']->response, $request->waId, $vendor_name);
+            $whatsapp_status = $this->watiService->sendWhatsappMessage($ai_response['data']->response, $request->waId, $vendor_name);
 
             if (!$whatsapp_status['success']) {
                 throw new \Exception ($whatsapp_status['error']);
@@ -62,8 +62,8 @@ class WatiController extends BaseController {
                 [
                     'debug_msg' => $e->getMessage(),
                     'debug_request' => $request,
-                    'debug_ai' => $ai_response,
-                    'debug_whatsapp' => $whatsapp_status,
+                    'debug_ai' => $ai_response ?? null,
+                    'debug_whatsapp' => $whatsapp_status ?? null,
                 ]
                  : 'App not in debug mode.',
             ], 500);
@@ -103,7 +103,7 @@ class WatiController extends BaseController {
                 [
                     'debug_msg' => $e->getMessage(),
                     'debug_request' => $request,
-                    'debug_response' => $response,
+                    'debug_response' => $response ?? null,
                 ]
                  : 'App not in debug mode.',
             ], 500);
@@ -131,7 +131,7 @@ class WatiController extends BaseController {
                 'debug' => config('app.debug') ? 
                 [
                     'debug_msg' => $e->getMessage(),
-                    'debug_response' => $response,
+                    'debug_response' => $response ?? null,
                 ]
                  : 'App not in debug mode.',
             ], 500);
@@ -158,7 +158,7 @@ class WatiController extends BaseController {
                 'debug' => config('app.debug') ? 
                 [
                     'debug_msg' => $e->getMessage(),
-                    'debug_response' => $response,
+                    'debug_response' => $response ?? null,
                 ]
                  : 'App not in debug mode.',
             ], 500);
@@ -197,7 +197,7 @@ class WatiController extends BaseController {
                 [
                     'debug_msg' => $e->getMessage(),
                     'debug_request' => $request,
-                    'debug_response' => $response,
+                    'debug_response' => $response ?? null,
                 ]
                  : 'App not in debug mode.',
             ], 500);

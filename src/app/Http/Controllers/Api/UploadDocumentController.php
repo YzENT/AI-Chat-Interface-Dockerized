@@ -47,7 +47,7 @@ class UploadDocumentController extends BaseController {
                 [
                     'debug_msg' => $e->getMessage(),
                     'debug_request' => $request,
-                    'debug_response' => $result,
+                    'debug_response' => $result ?? null,
                 ]
                  : 'App not in debug mode.',
             ], 500);

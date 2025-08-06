@@ -37,7 +37,7 @@ class ProfileController extends BaseController {
                 'debug' => config('app.debug') ? 
                 [
                     'debug_msg' => $e->getMessage(),
-                    'debug_response' => $response,
+                    'debug_response' => $response ?? null,
                 ]
                  : 'App not in debug mode.',
             ], 500);
@@ -66,7 +66,7 @@ class ProfileController extends BaseController {
                 [
                     'debug_msg' => $e->getMessage(),
                     'debug_request' => $request,
-                    'debug_response' => $response,
+                    'debug_response' => $response ?? null,
                 ]
                  : 'App not in debug mode.',
             ], 500);
