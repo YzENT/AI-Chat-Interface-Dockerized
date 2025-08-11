@@ -35,16 +35,21 @@ class WatiController extends BaseController {
         }
 
         try {
+            // Check if URL exists first
+            $vendor_api = $this->watiService->getVendorAPIData($vendor_name);
+
+            if (!$vendor_api['success']) {
+                throw new \Exception ($vendor_api['error']);
+            }
+
             $ai_response = $this->chatbotService->askJarvis($this->defaultUserID, $request->text);
 
             if (!$ai_response['success']) {
                 throw new \Exception ($ai_response['error']);
             }
 
-            $temp = 'You are now talking to an early prototype of an AI Chatbot developed by LifeCare. Please be advised that the information provided by this AI may not be fully accurate or up-to-date. It is recommended to verify any details independently or contact our support team for confirmation by directly calling this number.';
-
             // Forward AI response using WATI
-            $whatsapp_status = $this->watiService->sendWhatsappMessage($ai_response['data']->response, $request->waId, $vendor_name);
+            $whatsapp_status = $this->watiService->sendWhatsappMessage($ai_response['data']->response, $request->waId, $vendor_api);
 
             if (!$whatsapp_status['success']) {
                 throw new \Exception ($whatsapp_status['error']);

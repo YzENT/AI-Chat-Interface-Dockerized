@@ -13,10 +13,11 @@ export default function ChatApp() {
 
     const [isThinking, setIsThinking] = useState(false);
     const [currentMessage, setCurrentMessage] = useState('');
-    const [chatHistory, setChatHistory] = useState([INITIAL_MESSAGE]);
+    const [chatHistory, setChatHistory] = useState([]);
     const bearerToken = localStorage.getItem(import.meta.env.VITE_BEARER_NAME);
     const messagesEndRef = useRef(null);
     const textareaRef = useRef(null); // Add textarea ref for auto-resize functionality
+    const [convoID, setConvoID] = useState(null);
 
     useEffect(() => {
         if (!bearerToken) {
@@ -57,14 +58,54 @@ export default function ChatApp() {
             if (!isUserValid) {
                 throw new Error('Invalid user, token may have expired.');
             }
+
+            fetchPreviousConversation();
         } catch (error) {
             localStorage.removeItem(import.meta.env.VITE_BEARER_NAME);
             window.location.href = '/login';
         }
     };
 
+    const fetchPreviousConversation = async () => {
+        try {
+            const response = await fetch('/api/chatbot/convo', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + bearerToken,
+                },
+            });
+
+            const responseData = await response.json();
+
+            if (!responseData.success) {
+                throw new Error(responseData.msg);
+            }
+
+            // See if user has previous chat history or no
+            if (responseData.data.convo_messages === null) {
+                handleNewChat();
+            } else {
+                setConvoID(responseData.data.convo_messages[0].conversation_id); // Just use the first key
+                setChatHistory(
+                    responseData.data.convo_messages.map(msg => ({
+                        id: msg.message_id,
+                        type: msg.sender_type,
+                        content: msg.message,
+                        timestamp: new Date(msg.created_at)
+                    }))
+                );
+            }
+
+        } catch (error) {
+            return error.message || 'Unable to retrieve previous conversation.';
+        }
+    };
+
     const handleNewChat = () => {
+        setConvoID(null);
         setChatHistory([INITIAL_MESSAGE]);
+        setIsThinking(false);
     };
 
     // Auto-resize textarea function
@@ -90,7 +131,7 @@ export default function ChatApp() {
         adjustTextareaHeight();
     };
 
-    const getAIResponse = async() => {
+    const getAIResponse = async () => {
         try {
             const aiResponse = await fetch ('/api/chatbot/ask', {
                 method: 'POST',
@@ -114,67 +155,123 @@ export default function ChatApp() {
         }
     }
 
+    const storeMessage = async (message, sender_type) => {
+        try {
+            const response = await fetch ('/api/chatbot/convo/' + convoID, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + bearerToken,
+                },
+                body: JSON.stringify({ 
+                    message: message,
+                    sender_type: sender_type,
+                }),
+            });
+
+            const responseData = await response.json();
+
+            if (!responseData.success) {
+                throw new Error(responseData.msg);
+            }
+        } catch(error) {
+            toast.error( error.message || 'Unable to store message into server.');
+        }
+    }
+
     const handleSendMessage = async () => {
-        if (isThinking) {
+        if (isThinking || !currentMessage.trim()) {
             return;
         }
 
-        if (currentMessage.trim()) {
-            setChatHistory(prevMessages => [...prevMessages, {
-                id: Date.now(),
-                type: 'user',
-                content: currentMessage,
-                timestamp: new Date()
-            }]);
+        setChatHistory(prevMessages => [...prevMessages, {
+            id: Date.now(),
+            type: 'user',
+            content: currentMessage,
+            timestamp: new Date()
+        }]);
 
-            setCurrentMessage(''); // Reset chatbar status
-            
-            setTimeout(async () => {
-                const thinkingMessageId = Date.now() + 1;
-                
-                setChatHistory(prevMessages => [...prevMessages, {
-                    id: thinkingMessageId,
-                    type: 'assistant',
-                    content: '...',
-                    timestamp: new Date()
-                }]);
-                
-                try {
-                    setIsThinking(true);
-                    const ai_Response = await getAIResponse();
-                    
-                    // Replace thinking message with response
-                    setChatHistory(prevMessages => {
-                        return prevMessages.map(msg => 
-                            msg.id === thinkingMessageId 
-                                ? {
-                                    ...msg,
-                                    content: ai_Response,
-                                    timestamp: new Date()
-                                }
-                                : msg
-                        );
-                    });
-                    
-                } catch (error) {
-                    toast.error(error.message);
-                    setChatHistory(prevMessages => {
-                        return prevMessages.map(msg => 
-                            msg.id === thinkingMessageId 
-                                ? {
-                                    ...msg,
-                                    content: `Error: ${error.message}`,
-                                    timestamp: new Date()
-                                }
-                                : msg
-                        );
-                    });
-                } finally {
-                    setIsThinking(false);
-                }
-            }, 1000);
+        if (convoID) {
+            storeMessage(currentMessage, 'user');
+        } else {
+            await createNewConvo();
+            setIsThinking(true);
         }
+
+        setCurrentMessage(''); // Reset chatbar status
+
+        // setTimeout(async () => {
+        //     const thinkingMessageId = Date.now() + 1;
+            
+        //     setChatHistory(prevMessages => [...prevMessages, {
+        //         id: thinkingMessageId,
+        //         type: 'assistant',
+        //         content: '...',
+        //         timestamp: new Date()
+        //     }]);
+            
+        //     try {
+        //         setIsThinking(true);
+        //         const ai_Response = await getAIResponse();
+        //         storeMessage(ai_Response, 'assistant');
+                
+        //         // Replace thinking message with response
+        //         setChatHistory(prevMessages => {
+        //             return prevMessages.map(msg => 
+        //                 msg.id === thinkingMessageId 
+        //                     ? {
+        //                         ...msg,
+        //                         content: ai_Response,
+        //                         timestamp: new Date()
+        //                     }
+        //                     : msg
+        //             );
+        //         });
+                
+        //     } catch (error) {
+        //         toast.error(error.message);
+        //         setChatHistory(prevMessages => {
+        //             return prevMessages.map(msg => 
+        //                 msg.id === thinkingMessageId 
+        //                     ? {
+        //                         ...msg,
+        //                         content: `Error: ${error.message}`,
+        //                         timestamp: new Date()
+        //                     }
+        //                     : msg
+        //             );
+        //         });
+        //     } finally {
+        //         setIsThinking(false);
+        //     }
+        // }, 1000);
     };
+
+    const createNewConvo = async () => {
+        try {
+            const response = await fetch ('/api/chatbot/convo/create', { // Automatically stores newly sent message
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + bearerToken,
+                },
+                body: JSON.stringify({ 
+                    message: currentMessage,
+                }),
+            });
+
+            const responseData = await response.json();
+
+            if (!responseData.success) {
+                throw new Error(responseData.msg);
+            }
+            
+            setConvoID(responseData.data.convo_id);
+            toast.success(responseData.msg || 'Conversation created successfully!');
+        } catch(error) {
+            toast.error(error.message || 'Unable to retrieve response from server.');
+        }
+    }
 
     const handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {

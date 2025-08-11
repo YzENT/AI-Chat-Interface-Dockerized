@@ -22,20 +22,21 @@ class ChatbotController extends BaseController {
     public function askQuestion(AskRequest $request): JsonResponse {
         try {
             $user = $this->getAuthenticatedUser();
-            $response = $this->chatbotService->askJarvis($user->id, $request->prompt);
+            // $response = $this->chatbotService->askJarvis($user->id, $request->prompt);
             
-            if (!$response['success']) {
-                throw new \Exception ($response['error']);
-            }
+            // if (!$response['success']) {
+            //     throw new \Exception ($response['error']);
+            // }
 
-            $response_data = $response['data'];
+            // $response_data = $response['data'];
 
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'response' => $response_data->response,
-                    'sources' => $response_data->sources ?? '',
-                    'confidence' => $response_data->confidence ?? '',
+                    // 'response' => $response_data->response,
+                    'response' => 'Chatbot has been temporarily disabled',
+                    // 'sources' => $response_data->sources ?? '',
+                    // 'confidence' => $response_data->confidence ?? '',
                     // 'similarity' => isset($response_data->similarity) ? round($response_data->similarity, 2) : null,
                 ],
                 'msg' => 'Chatbot responded.',

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatbotController;
+use App\Http\Controllers\Api\ChatbotMessageController;
 use App\Http\Controllers\Api\UploadDocumentController;
 use App\Http\Controllers\Api\GetFAQController;
 use App\Http\Controllers\Api\GetDocumentController;
@@ -64,6 +65,11 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [LogoutController::class, 'logout']);
     Route::get('/profile', [ProfileController::class, 'getProfileDetails']);
     Route::post('/profile', [ProfileController::class, 'updateProfileDetails']);
+
+    Route::get('/chatbot/convo', [ChatbotMessageController::class, 'getLatestConvo']);
+    Route::post('/chatbot/convo/create', [ChatbotMessageController::class, 'createNewConvo']);
+    Route::post('/chatbot/convo/{convoID}', [ChatbotMessageController::class, 'appendExistingConvo']);
+    
 });
 
 Route::middleware(['auth:api', 'admin'])->group(function () {

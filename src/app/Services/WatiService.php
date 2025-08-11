@@ -14,21 +14,15 @@ class WatiService {
         $this->client = new Client();
     }
 
-    public function sendWhatsappMessage(string $messageToSend, string $phoneNumberToSend, string $vendor_name) {
+    public function sendWhatsappMessage(string $messageToSend, string $phoneNumberToSend, array $vendor_data) {
 
         // WATI doesn't support json raw data anymore, have to send through URL
         $joined_url = "/api/v1/sendSessionMessage/${phoneNumberToSend}?messageText=${messageToSend}";
 
         try {
-            $vendor_api = $this->getVendorAPIData($vendor_name);
-
-            if (!$vendor_api['success']) {
-                throw new \Exception($active_api['error']);
-            }
-
-            $response = $this->client->request('POST', $vendor_api['data']->api_url . $joined_url, [
+            $response = $this->client->request('POST', $vendor_data['data']->api_url . $joined_url, [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $vendor_api['data']->api_token,
+                    'Authorization' => 'Bearer ' . $vendor_data['data']->api_token,
                     'Content-Type' => 'application/json',
                 ]
             ]);
@@ -52,7 +46,6 @@ class WatiService {
             return [
                 'success' => false,
                 'error' => $e->getMessage(),
-                'debug' => $data ?? null,
             ];
         }
     }
@@ -149,7 +142,7 @@ class WatiService {
         }
     }
 
-    private function getVendorAPIData(string $vendor_name) {
+    public function getVendorAPIData(string $vendor_name) {
         try {
             $vendor_api = Wati::where('vendor_name', $vendor_name)
                             ->where('revoked', false)

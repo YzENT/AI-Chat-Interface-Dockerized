@@ -174,8 +174,19 @@ class ChatbotService {
     public function askJarvis($userID, $prompt) {
 
         $result = $this->jarvisApi_POST('/ask', [
+            'user_id' => "",
             'prompt' => $prompt,
+            'is_customer' => true,
+            'context' => "",
         ]);
+
+        // Look for content='' string
+        $pattern_content = "/content='((?:[^'\\\\]|\\\\.)*)'/";
+        if (preg_match($pattern_content, $result['data']->response, $matches)) {
+            $result['data']->response = stripcslashes($matches[1]);
+        }
+
+        // Then, filter to remove <think> </think> tags
         $result['data']->response = preg_replace('/<think>.*?<\/think>/s', '', $result['data']->response);
 
         return $result;
