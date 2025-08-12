@@ -31,15 +31,10 @@ class ProfileController extends BaseController {
             ], 200);
 
         } catch (\Exception $e) {
+            \Log::error('User failed to obtain profile details', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to obtain profile details.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_response' => $response ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -59,16 +54,10 @@ class ProfileController extends BaseController {
             ], 200);
 
         } catch (\Exception $e) {
+            \Log::error('User failed to update profile details', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to update profile details.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_request' => $request,
-                    'debug_response' => $response ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }

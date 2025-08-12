@@ -40,16 +40,10 @@ class UploadDocumentController extends BaseController {
             ], 201);
 
         } catch (\Exception $e) {
+            \Log::error("Failed to upload document type: ${documentType}", ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to upload file to servers.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_request' => $request,
-                    'debug_response' => $result ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }

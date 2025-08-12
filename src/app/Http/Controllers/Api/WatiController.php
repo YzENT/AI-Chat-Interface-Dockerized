@@ -61,17 +61,10 @@ class WatiController extends BaseController {
             ], 200);
 
         } catch (\Exception $e) {
+            \Log::error('Failed to send message to desired user through WATI', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to send message through WATI.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_request' => $request,
-                    'debug_ai' => $ai_response ?? null,
-                    'debug_whatsapp' => $whatsapp_status ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -102,16 +95,10 @@ class WatiController extends BaseController {
             ]);
 
         } catch (\Exception $e) {
+            \Log::error('Failed to update WATI vendor information', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to update vendor information.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_request' => $request,
-                    'debug_response' => $response ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -131,15 +118,10 @@ class WatiController extends BaseController {
             ]);
 
         } catch (\Exception $e) {
+            \Log::error('Failed to obtain vendor\'s WATI information', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to obtain WATI vendor list.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_response' => $response ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -158,15 +140,10 @@ class WatiController extends BaseController {
             ]);
 
         } catch (\Exception $e) {
+            \Log::error('Failed to delete vendor\'s WATI information ', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to delete WATI vendor information.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_response' => $response ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -196,16 +173,10 @@ class WatiController extends BaseController {
             ]);
 
         } catch (\Exception $e) {
+            \Log::error('Failed to create vendor API for WATI', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to create vendor API.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_request' => $request,
-                    'debug_response' => $response ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }

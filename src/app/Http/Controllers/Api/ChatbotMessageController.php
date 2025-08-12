@@ -52,16 +52,10 @@ class ChatbotMessageController extends BaseController {
                 'msg' => 'Latest conversation history obtained successfully.',
             ], 200);
         } catch (\Exception $e) {
+            \Log::error('Error occurred in obtaining previous chatbot conversation', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to fetch most recent conversation with chatbot.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_response_convoID' => $fetchConvoID ?? null,
-                    'debug_response_getMessages' => $fetchConvoMessages ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -83,15 +77,10 @@ class ChatbotMessageController extends BaseController {
                 'msg' => 'New conversation created and stored in system.',
             ], 200);
         } catch (\Exception $e) {
+            \Log::error('Failed to create new conversationn with chatbot', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to store conversation to system.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_response' => $createNewConvo ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -110,15 +99,10 @@ class ChatbotMessageController extends BaseController {
                 'msg' => 'Conversation extended.',
             ], 200);
         } catch (\Exception $e) {
+            \Log::error('Failed to append messages to current conversation', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to extend conversation.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_response' => $createNewConvo ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }

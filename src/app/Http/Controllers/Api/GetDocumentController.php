@@ -43,15 +43,10 @@ class GetDocumentController extends BaseController {
             ], 200);
 
         } catch (\Exception $e) {
+            \Log::error("Error in fetching desired document type: ${documentType}", ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to retrieve document list from external server.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_response' => $result ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -74,16 +69,10 @@ class GetDocumentController extends BaseController {
             return response()->download($filePath, $fileName);
 
         } catch (\Exception $e) {
+            \Log::error('Failed to download document from local server', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to obtain file from local server.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_request' => $request,
-                    'debug_response' => $response ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }

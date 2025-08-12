@@ -29,10 +29,10 @@ class RegisterController extends BaseController {
             ], 201);
 
         } catch (\Exception $e) {
+            \Log::error('User failed to register', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'There was an error in account creation. Please try again later.',
-                'debug' => config('app.debug') ? $e->getMessage(): 'App not in debug mode.',
             ], 500);
         }
     }

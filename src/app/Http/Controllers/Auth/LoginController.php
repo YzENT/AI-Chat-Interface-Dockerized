@@ -68,10 +68,10 @@ class LoginController extends BaseController {
             ], 200);
 
         } catch (\Exception $e) {
+            \Log::error('User failed to login', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'There was an error signing you in. Please try again later.',
-                'debug' => config('app.debug') ? $e->getMessage(): 'App not in debug mode.',
             ], 500);
         }
     }

@@ -22,37 +22,27 @@ class ChatbotController extends BaseController {
     public function askQuestion(AskRequest $request): JsonResponse {
         try {
             $user = $this->getAuthenticatedUser();
-            // $response = $this->chatbotService->askJarvis($user->id, $request->prompt);
+            $response = $this->chatbotService->askJarvis($user->id, $request->prompt);
             
-            // if (!$response['success']) {
-            //     throw new \Exception ($response['error']);
-            // }
+            if (!$response['success']) {
+                throw new \Exception ($response['error']);
+            }
 
-            // $response_data = $response['data'];
+            $response_data = $response['data'];
 
             return response()->json([
                 'success' => true,
                 'data' => [
-                    // 'response' => $response_data->response,
-                    'response' => 'Chatbot has been temporarily disabled',
-                    // 'sources' => $response_data->sources ?? '',
-                    // 'confidence' => $response_data->confidence ?? '',
-                    // 'similarity' => isset($response_data->similarity) ? round($response_data->similarity, 2) : null,
+                    'response' => $response_data->response,
                 ],
                 'msg' => 'Chatbot responded.',
             ], 200);
 
         } catch (\Exception $e) {
+            \Log::error('Error occurred in obtaining chatbot response', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => "An error has occured, please try asking again later.",
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_request' => $request,
-                    'debug_response' => $response ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -74,15 +64,10 @@ class ChatbotController extends BaseController {
                 'msg' => 'Chatbot knowledge obtained.',
             ], 200);
         } catch (\Exception $e) {
+            \Log::error('Error occurred in obtaining chatbot knowledge', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to load knowledges for chatbot, please try again later.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_response' => $response ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -102,16 +87,10 @@ class ChatbotController extends BaseController {
             ], 201);
 
         } catch (\Exception $e) {
+            \Log::error('Error occurred in uploading prompt to chatbot', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to upload prompt to chatbot, please try again later.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_request' => $request,
-                    'debug_response' => $response ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -134,15 +113,10 @@ class ChatbotController extends BaseController {
                 'msg' => 'Previously added prompts obtained.',
             ], 200);
         } catch (\Exception $e) {
+            \Log::error('Error occurred in obtaining previously added prompts by current user', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to obtain prompts from chatbot, please try again later.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_response' => $response,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -162,16 +136,10 @@ class ChatbotController extends BaseController {
             ], 201);
 
         } catch (\Exception $e) {
+            \Log::error('Error occurred in uploading URL for chatbot to crawl', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to upload specified URL to chatbot, please try again later.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_request' => $request,
-                    'debug_response' => $response ?? null,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }
@@ -194,15 +162,10 @@ class ChatbotController extends BaseController {
                 'msg' => 'Previously crawled URL\'s obtained.',
             ], 200);
         } catch (\Exception $e) {
+            \Log::error('Error occurred in obtaining previously crawled URLs by current user', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'Failed to obtain URLs from chatbot, please try again later.',
-                'debug' => config('app.debug') ? 
-                [
-                    'debug_msg' => $e->getMessage(),
-                    'debug_response' => $response,
-                ]
-                 : 'App not in debug mode.',
             ], 500);
         }
     }

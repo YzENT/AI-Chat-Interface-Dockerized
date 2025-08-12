@@ -27,10 +27,10 @@ class LogoutController extends BaseController {
                 'msg' => 'Logout successful!'
             ], 200);
         } catch (\Exception $e) {
+            \Log::error('User failed to logout', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'msg' => 'There was an error signing you out. Please try again later.',
-                'debug' => config('app.debug') ? $e->getMessage(): 'App not in debug mode.',
             ], 500);
         }
     }
