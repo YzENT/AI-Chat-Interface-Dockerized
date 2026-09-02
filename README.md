@@ -3,6 +3,8 @@ A Laravel-based web interface that allows users to interact with an LLM (Large L
 
 This application is fully Dockerized for seamless deployment.
 
+**NOTE**: The IP address that's being called to obtain chatbot messages has been made sure that it's no longer in use prior to making this repo public. This repo has been made public to showcase my work and is NOT intended for any commercial use.
+
 ## 🚀 Prerequisites
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
